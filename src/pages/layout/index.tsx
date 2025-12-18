@@ -1,7 +1,7 @@
-import { Box, Container, Flex, Icon, Text, Switch } from "@chakra-ui/react";
+import { Box, Container, Flex, Icon, Text, Switch, Link, Stack } from "@chakra-ui/react";
 import type { ReactNode } from "react";
 import { MdCheckCircleOutline } from "react-icons/md";
-import { FaMoon, FaSun } from "react-icons/fa";
+import { FaMoon, FaSun, FaGithub, FaLinkedin } from "react-icons/fa";
 import { useColorMode } from "@/components/ui/color-mode";
 
 interface LayoutProps {
@@ -18,10 +18,11 @@ export function Layout({ children }: LayoutProps) {
   }
 
   const isLight = colorMode === "light";
+  const year = new Date().getFullYear();
 
   return (
-    <Box bg="bg" color="fg" minH="100vh" py="5">
-      <Container maxW="6xl">
+    <Box bg="bg" color="fg" minH="100vh" py="5" display="flex" flexDirection="column">
+      <Container maxW="6xl" flex="1">
         <Flex direction="column" textAlign="center" gap="2">
           <Text fontSize="5xl">
             ToD
@@ -52,7 +53,7 @@ export function Layout({ children }: LayoutProps) {
 
         <Box
           bg="surface"
-          shadow={"md"}
+          shadow="md"
           borderRadius="sm"
           p="4"
           mt="6"
@@ -62,6 +63,52 @@ export function Layout({ children }: LayoutProps) {
           {children}
         </Box>
       </Container>
+
+      {/* Footer */}
+      <Box mt="8" py="4" borderTopWidth="1px" borderColor="border">
+        <Container maxW="6xl">
+          <Flex
+            direction={{ base: "column", md: "row" }}
+            justify="space-between"
+            align="center"
+            gap="2"
+          >
+            <Text fontSize="sm" color="fg.muted">
+              © {year} Thyago Monteiro
+            </Text>
+
+            <Stack direction="row" gap="4">
+              <Link
+                href="https://github.com/ThyMont/one-hundred-days-001-todo-list"
+                target="_blank"
+                rel="noopener noreferrer"
+                display="flex"
+                alignItems="center"
+                gap="1"
+                color="fg.muted"
+                _hover={{ color: "fg" }}
+              >
+                <Icon as={FaGithub} />
+                <Text fontSize="sm">GitHub</Text>
+              </Link>
+
+              <Link
+                href="https://www.linkedin.com/in/thyagomonteiro/"
+                target="_blank"
+                rel="noopener noreferrer"
+                display="flex"
+                alignItems="center"
+                gap="1"
+                color="fg.muted"
+                _hover={{ color: "fg" }}
+              >
+                <Icon as={FaLinkedin} />
+                <Text fontSize="sm">LinkedIn</Text>
+              </Link>
+            </Stack>
+          </Flex>
+        </Container>
+      </Box>
     </Box>
   );
 }
