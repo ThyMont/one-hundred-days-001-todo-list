@@ -1,9 +1,9 @@
 import type { Task } from "@/types";
+import { FormButton } from "@/components/FormButton";
 import { Box, Button, Card, Flex, Icon, Stack, Text } from "@chakra-ui/react";
 import { FiTrash2 } from "react-icons/fi";
-import { FormButton } from "@/components/FormButton";
-import { MdCheckCircle } from "react-icons/md";
 import { LuCheck } from "react-icons/lu";
+import { MdCheckCircle } from "react-icons/md";
 import { Tooltip } from "@/components/ui/tooltip";
 
 interface TaskCardProps {
@@ -15,6 +15,16 @@ interface TaskCardProps {
 
 export default function TaskCard({ task, onUpdate, onDelete, onFinish }: TaskCardProps) {
   const isFinished = Boolean(task.conclusionDate);
+
+  const actionBtnProps = {
+    variant: "ghost" as const,
+    size: "sm" as const,
+    borderWidth: "1px",
+    borderColor: "border",
+    bg: "transparent",
+    _hover: { bg: "bg.subtle" },
+    _active: { bg: "bg.muted" },
+  };
 
   return (
     <Card.Root bg="surface" borderWidth="1px" borderColor="border" borderRadius="lg">
@@ -42,17 +52,15 @@ export default function TaskCard({ task, onUpdate, onDelete, onFinish }: TaskCar
           </Box>
 
           <Stack direction="row" gap="2" align="center">
-            {/* FINISH TASK */}
             {!isFinished ? (
               <Tooltip content="Finish task">
                 <Button
-                  variant="outline"
-                  size="sm"
-                  colorPalette="success"
+                  {...actionBtnProps}
                   aria-label="Finish task"
                   onClick={() => onFinish?.(task)}
+                  color="success"
                 >
-                  <Icon as={LuCheck} />
+                  <Icon as={LuCheck} fontSize="lg" />
                 </Button>
               </Tooltip>
             ) : (
@@ -61,23 +69,23 @@ export default function TaskCard({ task, onUpdate, onDelete, onFinish }: TaskCar
               </Tooltip>
             )}
 
-            {/* EDIT */}
             <FormButton
               onSave={(title, description) => onUpdate(task.id, title, description)}
               initialTitle={task.title}
               initialDescription={task.description ?? ""}
+              triggerVariant="ghost"
             />
 
-            {/* DELETE */}
-            <Button
-              variant="outline"
-              size="sm"
-              colorPalette="danger"
-              onClick={() => onDelete?.(task)}
-              aria-label="Delete task"
-            >
-              <Icon as={FiTrash2} />
-            </Button>
+            <Tooltip content="Delete task">
+              <Button
+                {...actionBtnProps}
+                aria-label="Delete task"
+                onClick={() => onDelete?.(task)}
+                color="danger"
+              >
+                <Icon as={FiTrash2} fontSize="lg" />
+              </Button>
+            </Tooltip>
           </Stack>
         </Flex>
       </Card.Body>

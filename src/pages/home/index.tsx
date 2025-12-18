@@ -2,44 +2,40 @@ import { FormButton } from "@/components/FormButton";
 import TaskCard from "@/components/TaskCard";
 import { Layout } from "@/pages/layout";
 import type { Task } from "@/types";
+import { tasksApi } from "@/api/tasks";
 import { Box, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  function handleSave(title: string, description: string) {
-    const task: Task = {
-      id: Math.random(),
-      title,
-      description,
-      createdAt: new Date(),
-    };
+  useEffect(() => {
+    setTasks(tasksApi.listTasks());
+  }, []);
 
-    setTasks((prev) => [...prev, task]);
+  function handleSave(title: string, description: string) {
+    const created = tasksApi.createTask(title, description);
+    setTasks((prev) => [created, ...prev]);
   }
 
   function handleUpdate(taskId: Task["id"], title: string, description: string) {
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === taskId
-          ? {
-              ...t,
-              title,
-              description,
-            }
-          : t
-      )
-    );
+    const updated = tasksApi.updateTask(taskId, { title, description });
+    if (!updated) return;
+
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? updated : t)));
   }
 
   function handleFinish(task: Task) {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === task.id ? { ...t, conclusionDate: new Date() } : t))
-    );
+    const finished = tasksApi.finishTask(task.id);
+    if (!finished) return;
+
+    setTasks((prev) => prev.map((t) => (t.id === task.id ? finished : t)));
   }
 
   function handleDelete(task: Task) {
+    const ok = tasksApi.deleteTask(task.id);
+    if (!ok) return;
+
     setTasks((prev) => prev.filter((t) => t.id !== task.id));
   }
 

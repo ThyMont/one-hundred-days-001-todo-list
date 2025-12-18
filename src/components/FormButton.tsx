@@ -4,20 +4,21 @@ import { FiEdit2 } from "react-icons/fi";
 
 interface Props {
   onSave: (title: string, description: string) => void;
-
-  // Se vier preenchido, o componente entra em "edit mode"
   initialTitle?: string;
   initialDescription?: string;
-
-  // Opcional: customizar label do botão no modo create
   createLabel?: string;
+
+  triggerVariant?: "solid" | "ghost" | "subtle" | "outline";
 }
+
+type SwitchChange = { open: boolean };
 
 export function FormButton({
   onSave,
   initialTitle,
   initialDescription,
   createLabel = "New Task",
+  triggerVariant = "solid",
 }: Props) {
   const isEditMode = initialTitle !== undefined || initialDescription !== undefined;
 
@@ -34,17 +35,36 @@ export function FormButton({
   function handleSave() {
     onSave(title.trim(), description.trim());
     setOpen(false);
+
+    if (!isEditMode) {
+      setTitle("");
+      setDescription("");
+    }
   }
 
+  const isDisabled = !title.trim();
+
   return (
-    <Popover.Root open={open} onOpenChange={(e) => setOpen(e.open)}>
+    <Popover.Root open={open} onOpenChange={(e: SwitchChange) => setOpen(e.open)}>
       <Popover.Trigger asChild>
         {isEditMode ? (
-          <Button variant="outline" size="sm" aria-label="Edit task">
-            <Icon as={FiEdit2} />
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label="Edit task"
+            color="fg"
+            borderWidth="1px"
+            borderColor="border"
+            bg="transparent"
+            _hover={{ bg: "bg.subtle" }}
+            _active={{ bg: "bg.muted" }}
+          >
+            <Icon as={FiEdit2} fontSize="lg" />
           </Button>
         ) : (
-          <Button size="sm">{createLabel}</Button>
+          <Button variant={triggerVariant} size="sm" colorPalette="brand">
+            {createLabel}
+          </Button>
         )}
       </Popover.Trigger>
 
@@ -57,7 +77,7 @@ export function FormButton({
             borderColor="border"
             boxShadow="lg"
           >
-            <Popover.Arrow />
+            <Popover.Arrow bg="surface" />
             <Popover.Body>
               <Stack gap="4">
                 <Field.Root>
@@ -78,7 +98,7 @@ export function FormButton({
                   />
                 </Field.Root>
 
-                <Button size="sm" onClick={handleSave} disabled={!title.trim()}>
+                <Button size="sm" onClick={handleSave} disabled={isDisabled} colorPalette="brand">
                   Save
                 </Button>
               </Stack>
