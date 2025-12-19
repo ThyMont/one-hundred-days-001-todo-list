@@ -18,7 +18,6 @@ export function Layout({ children }: LayoutProps) {
   }
 
   const isLight = colorMode === "light";
-  const year = new Date().getFullYear();
 
   return (
     <Box bg="bg" color="fg" minH="100vh" py="5" display="flex" flexDirection="column">
@@ -74,12 +73,12 @@ export function Layout({ children }: LayoutProps) {
             gap="2"
           >
             <Text fontSize="sm" color="fg.muted">
-              © {year} Thyago Monteiro
+              © {new Date().getFullYear()} Thyago Monteiro — 100 Days of Code
             </Text>
 
             <Stack direction="row" gap="4">
               <Link
-                href="https://github.com/ThyMont/one-hundred-days-001-todo-list"
+                href="https://github.com/ThyMont"
                 target="_blank"
                 rel="noopener noreferrer"
                 display="flex"
